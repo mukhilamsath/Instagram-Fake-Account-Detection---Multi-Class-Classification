@@ -1,6 +1,3 @@
-Based on the source code and project details provided, here is a professional `README.md` for your **Instagram Fake Account Detection** project, including your teammate Harisree T.
-
-***
 
 # Instagram Fake Account Detection (Multi-Class Classification)
 
