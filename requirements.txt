@@ -1,0 +1,10 @@
+streamlit
+pandas
+scikit-learn
+xgboost
+matplotlib
+seaborn
+fastapi
+uvicorn
+jinja2
+python-multipart

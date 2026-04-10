@@ -1,0 +1,1 @@
+["no_of_posts", "following", "followers", "bio_len", "picture", "link", "caption_len", "caption_per", "non_image", "engage_like", "engage_comm", "location_tag_per", "avg_hashtag_count", "promotion_key", "follower_key", "cosine_similarity", "post_interval", "engagement_ratio", "follower_following_ratio", "activity_score", "profile_score", "engagement_total"]

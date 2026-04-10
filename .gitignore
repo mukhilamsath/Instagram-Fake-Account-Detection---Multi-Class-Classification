@@ -1,0 +1,76 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# =========================
+# Virtual Environment
+# =========================
+venv/
+env/
+ENV/
+
+# =========================
+# Jupyter Notebook
+# =========================
+.ipynb_checkpoints/
+*.ipynb
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+
+# =========================
+# Logs & Debug Files
+# =========================
+*.log
+meta_debug.json
+
+# =========================
+# Model Files (ML)
+# =========================
+*.pkl
+*.joblib
+*.h5
+*.model
+random_forest_model*.pkl
+ensemble_model_*.pkl
+
+# =========================
+# Dataset (optional - if large)
+# =========================
+dataset.csv
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# Temporary / Cache
+# =========================
+*.tmp
+*.bak
+
+# =========================
+# Build / Dist
+# =========================
+build/
+dist/
+*.egg-info/
+
+# =========================
+# API Sample Data (optional)
+# =========================
+sample_*.json
