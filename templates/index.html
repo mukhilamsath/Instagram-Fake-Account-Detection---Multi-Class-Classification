@@ -3,222 +3,527 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instagram Fake Account Detector | ML-Powered</title>
-  <meta name="description" content="Detect fake Instagram accounts using advanced Machine Learning models trained on 43,000+ accounts." />
+  <title>FakeGuard AI — Instagram Fake Account Detector</title>
+  <meta name="description" content="Detect fake Instagram accounts using advanced ML models. Multi-class classification: Real, Active Fake, Inactive Fake, Spammer. Powered by Random Forest & XGBoost." />
+  <meta name="theme-color" content="#09090f" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/style.css" />
 </head>
 <body>
 
-  <div class="blobs" aria-hidden="true">
+  <!-- ── ANIMATED BACKGROUND ─────────────────────────────────── -->
+  <div class="bg-canvas" aria-hidden="true">
+    <canvas id="particle-canvas"></canvas>
     <div class="blob b1"></div>
     <div class="blob b2"></div>
     <div class="blob b3"></div>
   </div>
 
-  <div class="page">
+  <!-- ── TOAST CONTAINER ──────────────────────────────────────── -->
+  <div id="toast-container" aria-live="polite"></div>
 
-    <!-- ── HEADER ──────────────────────────────── -->
-    <header class="site-header">
-      <div class="logo">
-        <span class="logo-icon">🔍</span>
-        <span class="logo-text">FakeGuard <span class="logo-tag">AI</span></span>
-      </div>
-      <p class="tagline">Instagram Fake Account Detection · Powered by Machine Learning</p>
-    </header>
+  <!-- ── NAV ──────────────────────────────────────────────────── -->
+  <nav class="site-nav glass-nav" id="main-nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#" data-page="home">
+        <span class="nav-logo-icon">🔍</span>
+        <span class="nav-logo-text">FakeGuard <span class="logo-ai">AI</span></span>
+      </a>
 
-    <!-- ── STATS BAR ────────────────────────────── -->
-    <div class="stats-bar glass">
-      <div class="stat">
-        <span class="stat-val">43,307</span>
-        <span class="stat-label">Training Samples</span>
-      </div>
-      <div class="stat">
-        <span class="stat-val">4</span>
-        <span class="stat-label">Account Classes</span>
-      </div>
-      <div class="stat">
-        <span class="stat-val">20</span>
-        <span class="stat-label">ML Features</span>
-      </div>
-      <div class="stat">
-        <span class="stat-val">RF + XGB</span>
-        <span class="stat-label">Models Available</span>
-      </div>
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#" class="nav-link active" data-page="home" id="nav-home">
+          <span class="nav-icon">🏠</span> Analyzer
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="dashboard" id="nav-dashboard">
+          <span class="nav-icon">📊</span> Dashboard
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="history" id="nav-history">
+          <span class="nav-icon">📜</span> History
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="about" id="nav-about">
+          <span class="nav-icon">ℹ️</span> About
+        </a></li>
+      </ul>
     </div>
+  </nav>
 
-    <!-- ── QUICK-LOAD EXAMPLES ───────────────────── -->
-    <div class="examples-bar">
-      <span class="examples-label">Try an example →</span>
-      <button class="ex-btn ex-r" onclick="loadExample('r')">✅ Real</button>
-      <button class="ex-btn ex-a" onclick="loadExample('a')">⚠️ Active Fake</button>
-      <button class="ex-btn ex-i" onclick="loadExample('i')">👻 Inactive Fake</button>
-      <button class="ex-btn ex-s" onclick="loadExample('s')">🤖 Spammer</button>
-    </div>
+  <!-- ── MAIN CONTENT ──────────────────────────────────────────── -->
+  <main class="app-main">
 
-    <!-- ── MAIN GRID ─────────────────────────────── -->
-    <main class="main-grid">
+    <!-- ════════════════════════════════════════════════════════════
+         PAGE: HOME — ANALYZER
+    ════════════════════════════════════════════════════════════ -->
+    <div class="page-view active" id="page-home">
 
-      <!-- FORM PANEL -->
-      <section class="glass card form-card" id="form-section">
-        <h2 class="card-title">Analyze Account</h2>
-        <p class="card-sub">Enter the public profile statistics below, or click an example above.</p>
+      <!-- Hero -->
+      <header class="hero">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span> ML-Powered Detection
+        </div>
+        <h1 class="hero-title">
+          Unmask Fake<br/>
+          <span class="gradient-text">Instagram Accounts</span>
+        </h1>
+        <p class="hero-sub">Multi-class classification engine trained on <strong>43,307</strong> accounts using Random Forest &amp; XGBoost</p>
 
-        <form id="scan-form" autocomplete="off">
+        <!-- Stats strip -->
+        <div class="hero-stats">
+          <div class="hstat">
+            <span class="hstat-val" data-count="43307">0</span>
+            <span class="hstat-label">Training Samples</span>
+          </div>
+          <div class="hstat-divider"></div>
+          <div class="hstat">
+            <span class="hstat-val">4</span>
+            <span class="hstat-label">Account Classes</span>
+          </div>
+          <div class="hstat-divider"></div>
+          <div class="hstat">
+            <span class="hstat-val" data-count="94">0</span><span class="hstat-val-suffix">%</span>
+            <span class="hstat-label">Accuracy</span>
+          </div>
+          <div class="hstat-divider"></div>
+          <div class="hstat">
+            <span class="hstat-val">RF + XGB</span>
+            <span class="hstat-label">Models</span>
+          </div>
+        </div>
+      </header>
 
-          <div class="field-group model-group">
-            <label class="field-label" for="model_choice">AI Model</label>
-            <div class="select-wrapper">
-              <select name="model_choice" id="model_choice" class="field-input">
-                <option value="Random Forest">🌲 Random Forest (Recommended)</option>
-                {% if xgb_available %}
-                <option value="XGBoost">⚡ XGBoost</option>
-                {% endif %}
-              </select>
-            </div>
+      <!-- Quick-load examples -->
+      <div class="examples-bar glass-sm">
+        <span class="examples-label">Try an example →</span>
+        <button class="ex-btn ex-r" id="ex-r" onclick="loadExample('r')">✅ Real</button>
+        <button class="ex-btn ex-a" id="ex-a" onclick="loadExample('a')">⚠️ Active Fake</button>
+        <button class="ex-btn ex-i" id="ex-i" onclick="loadExample('i')">👻 Inactive Fake</button>
+        <button class="ex-btn ex-s" id="ex-s" onclick="loadExample('s')">🤖 Spammer</button>
+      </div>
+
+      <!-- Main grid -->
+      <div class="analyzer-grid">
+
+        <!-- FORM CARD -->
+        <section class="glass card form-card" id="form-section">
+          <div class="card-header">
+            <h2 class="card-title">Analyze Account</h2>
+            <p class="card-sub">Enter the public profile statistics below.</p>
           </div>
 
-          <div class="inputs-grid">
+          <form id="scan-form" autocomplete="off" novalidate>
 
-            <div class="field-group">
-              <label class="field-label" for="no_of_posts">
-                <span class="field-icon">📸</span> Number of Posts
-              </label>
-              <input type="number" min="0" name="no_of_posts" id="no_of_posts"
-                     class="field-input" placeholder="e.g. 28" />
-            </div>
-
-            <div class="field-group">
-              <label class="field-label" for="followers">
-                <span class="field-icon">👥</span> Followers
-              </label>
-              <input type="number" min="0" name="followers" id="followers"
-                     class="field-input" placeholder="e.g. 609" />
-            </div>
-
-            <div class="field-group">
-              <label class="field-label" for="following">
-                <span class="field-icon">➕</span> Following
-              </label>
-              <input type="number" min="0" name="following" id="following"
-                     class="field-input" placeholder="e.g. 394" />
-            </div>
-
-            <div class="field-group">
-              <label class="field-label" for="bio_len">
-                <span class="field-icon">📝</span> Bio Length (chars)
-              </label>
-              <input type="number" min="0" name="bio_len" id="bio_len"
-                     class="field-input" placeholder="e.g. 43" />
-            </div>
-
-            <div class="field-group">
-              <label class="field-label" for="picture">
-                <span class="field-icon">🖼️</span> Has Profile Picture?
+            <div class="field-group model-group">
+              <label class="field-label" for="model_choice">
+                <span class="field-icon">🤖</span> AI Model
               </label>
               <div class="select-wrapper">
-                <select name="picture" id="picture" class="field-input">
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
+                <select name="model_choice" id="model_choice" class="field-input">
+                  <option value="Random Forest">🌲 Random Forest (Recommended)</option>
+                  {% if xgb_available %}
+                  <option value="XGBoost">⚡ XGBoost</option>
+                  {% endif %}
                 </select>
               </div>
             </div>
 
-            <div class="field-group">
-              <label class="field-label" for="link">
-                <span class="field-icon">🔗</span> Has External Link?
-              </label>
-              <div class="select-wrapper">
-                <select name="link" id="link" class="field-input">
-                  <option value="0">No</option>
-                  <option value="1">Yes</option>
-                </select>
+            <div class="inputs-grid">
+
+              <div class="field-group" id="fg-posts">
+                <label class="field-label" for="no_of_posts">
+                  <span class="field-icon">📸</span> Number of Posts
+                </label>
+                <input type="number" min="0" name="no_of_posts" id="no_of_posts"
+                       class="field-input" placeholder="e.g. 28" />
+                <span class="field-hint">Total posts on the profile</span>
               </div>
+
+              <div class="field-group" id="fg-followers">
+                <label class="field-label" for="followers">
+                  <span class="field-icon">👥</span> Followers
+                </label>
+                <input type="number" min="0" name="followers" id="followers"
+                       class="field-input" placeholder="e.g. 609" />
+                <span class="field-hint">Total follower count</span>
+              </div>
+
+              <div class="field-group" id="fg-following">
+                <label class="field-label" for="following">
+                  <span class="field-icon">➕</span> Following
+                </label>
+                <input type="number" min="0" name="following" id="following"
+                       class="field-input" placeholder="e.g. 394" />
+                <span class="field-hint">Accounts this user follows</span>
+              </div>
+
+              <div class="field-group" id="fg-bio">
+                <label class="field-label" for="bio_len">
+                  <span class="field-icon">📝</span> Bio Length (chars)
+                </label>
+                <input type="number" min="0" name="bio_len" id="bio_len"
+                       class="field-input" placeholder="e.g. 43" />
+                <span class="field-hint">Number of characters in bio</span>
+              </div>
+
+              <div class="field-group" id="fg-picture">
+                <label class="field-label" for="picture">
+                  <span class="field-icon">🖼️</span> Profile Picture?
+                </label>
+                <div class="select-wrapper">
+                  <select name="picture" id="picture" class="field-input">
+                    <option value="1">Yes — has picture</option>
+                    <option value="0">No — no picture</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field-group" id="fg-link">
+                <label class="field-label" for="link">
+                  <span class="field-icon">🔗</span> External Link?
+                </label>
+                <div class="select-wrapper">
+                  <select name="link" id="link" class="field-input">
+                    <option value="0">No — no link</option>
+                    <option value="1">Yes — has link</option>
+                  </select>
+                </div>
+              </div>
+
             </div>
 
+            <button type="submit" class="scan-btn" id="scan-btn">
+              <span class="btn-icon">🔍</span>
+              <span class="btn-label" id="btn-label">Scan Account</span>
+              <div class="btn-spinner hidden" id="btn-spinner"></div>
+            </button>
+
+          </form>
+        </section>
+
+        <!-- RESULT CARD -->
+        <aside class="glass card result-card hidden" id="result-panel">
+          <div class="card-header">
+            <h2 class="card-title">Analysis Result</h2>
           </div>
 
-          <button type="submit" class="scan-btn" id="scan-btn">
-            <span class="btn-label" id="btn-label">Scan Account</span>
-            <div class="btn-spinner hidden" id="btn-spinner"></div>
-          </button>
+          <!-- Result hero -->
+          <div class="result-hero" id="result-hero">
+            <div class="result-gauge-wrap">
+              <svg class="result-gauge" viewBox="0 0 120 70" id="result-gauge-svg">
+                <path class="gauge-bg"  d="M10,65 A55,55 0 0,1 110,65" />
+                <path class="gauge-arc" id="gauge-arc" d="M10,65 A55,55 0 0,1 110,65"
+                      stroke-dasharray="0 173" />
+                <text x="60" y="58" class="gauge-val" id="gauge-val">0%</text>
+                <text x="60" y="68" class="gauge-label">Confidence</text>
+              </svg>
+            </div>
+            <div class="result-main">
+              <div class="result-icon" id="result-icon">🔍</div>
+              <h3 class="result-label" id="result-label">—</h3>
+              <p class="result-class" id="result-class"></p>
+              <span class="result-badge" id="result-badge"></span>
+            </div>
+          </div>
 
-        </form>
+          <!-- 4-class probability breakdown -->
+          <div class="prob-section">
+            <h4 class="prob-title">Class Probabilities</h4>
+            <div class="prob-grid" id="prob-grid">
+              <div class="prob-item">
+                <div class="prob-header">
+                  <span class="prob-icon">✅</span>
+                  <span class="prob-name">Real</span>
+                  <span class="prob-pct" id="prob-r">—</span>
+                </div>
+                <div class="prob-bar"><div class="prob-fill prob-fill-r" id="pfill-r"></div></div>
+              </div>
+              <div class="prob-item">
+                <div class="prob-header">
+                  <span class="prob-icon">⚠️</span>
+                  <span class="prob-name">Active Fake</span>
+                  <span class="prob-pct" id="prob-a">—</span>
+                </div>
+                <div class="prob-bar"><div class="prob-fill prob-fill-a" id="pfill-a"></div></div>
+              </div>
+              <div class="prob-item">
+                <div class="prob-header">
+                  <span class="prob-icon">👻</span>
+                  <span class="prob-name">Inactive Fake</span>
+                  <span class="prob-pct" id="prob-i">—</span>
+                </div>
+                <div class="prob-bar"><div class="prob-fill prob-fill-i" id="pfill-i"></div></div>
+              </div>
+              <div class="prob-item">
+                <div class="prob-header">
+                  <span class="prob-icon">🤖</span>
+                  <span class="prob-name">Spammer</span>
+                  <span class="prob-pct" id="prob-s">—</span>
+                </div>
+                <div class="prob-bar"><div class="prob-fill prob-fill-s" id="pfill-s"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Signals / Explanation pills -->
+          <div class="signals-section" id="signals-section">
+            <h4 class="signals-title">Signal Indicators</h4>
+            <div class="signals-list" id="signals-list"></div>
+          </div>
+
+          <div class="result-footer">
+            <p class="result-model-tag" id="result-model-tag"></p>
+            <button class="save-btn" id="save-btn" onclick="saveCurrentScan()">💾 Save to History</button>
+          </div>
+        </aside>
+
+      </div><!-- /analyzer-grid -->
+
+      <!-- Class Guide -->
+      <section class="guide glass" id="class-guide">
+        <h3 class="guide-title">Account Classification Guide</h3>
+        <div class="guide-grid">
+          <div class="guide-item real">
+            <span class="gi-icon">✅</span>
+            <strong>Real Account</strong>
+            <p>Genuine user with organic activity and healthy follower ratio.</p>
+            <code class="sample-hint">~28 posts · 609 followers · 394 following</code>
+          </div>
+          <div class="guide-item active-fake">
+            <span class="gi-icon">⚠️</span>
+            <strong>Active Fake</strong>
+            <p>Bot or purchased account that mimics activity but shows suspicious signals.</p>
+            <code class="sample-hint">~61 posts · 2000 followers · 437 following</code>
+          </div>
+          <div class="guide-item inactive-fake">
+            <span class="gi-icon">👻</span>
+            <strong>Inactive Fake</strong>
+            <p>Dormant or dead account with minimal posts and no bio.</p>
+            <code class="sample-hint">~1 post · 3900 followers · 88 following</code>
+          </div>
+          <div class="guide-item spammer">
+            <span class="gi-icon">🤖</span>
+            <strong>Spammer Fake</strong>
+            <p>High following, many posts, spam content patterns — classic bot behaviour.</p>
+            <code class="sample-hint">~51 posts · 1800 followers · 357 following</code>
+          </div>
+        </div>
       </section>
 
-      <!-- RESULT PANEL -->
-      <aside class="glass card result-card hidden" id="result-panel">
-        <h2 class="card-title">Result</h2>
+    </div><!-- /page-home -->
 
-        <div class="result-body" id="result-body">
-          <div class="result-icon" id="result-icon">🔍</div>
-          <h3 class="result-label" id="result-label">—</h3>
-          <p class="result-class" id="result-class"></p>
-          <span class="result-badge" id="result-badge"></span>
-        </div>
+    <!-- ════════════════════════════════════════════════════════════
+         PAGE: DASHBOARD
+    ════════════════════════════════════════════════════════════ -->
+    <div class="page-view" id="page-dashboard">
+      <div class="page-header">
+        <h1 class="page-title gradient-text">Analytics Dashboard</h1>
+        <p class="page-sub">Model performance metrics and dataset insights</p>
+      </div>
 
-        <div class="signal-grid" id="signal-grid">
-          <div class="signal-item">
-            <span class="sig-label">Posts</span>
-            <div class="sig-bar"><div class="sig-fill" id="sfill-posts"></div></div>
-          </div>
-          <div class="signal-item">
-            <span class="sig-label">Follower / Following Ratio</span>
-            <div class="sig-bar"><div class="sig-fill" id="sfill-ratio"></div></div>
-          </div>
-          <div class="signal-item">
-            <span class="sig-label">Bio Length</span>
-            <div class="sig-bar"><div class="sig-fill" id="sfill-bio"></div></div>
-          </div>
-          <div class="signal-item">
-            <span class="sig-label">Profile Picture</span>
-            <div class="sig-bar"><div class="sig-fill" id="sfill-picture"></div></div>
-          </div>
+      <!-- Accuracy Cards -->
+      <div class="metric-cards" id="metric-cards">
+        <div class="metric-card glass">
+          <div class="mc-icon">📊</div>
+          <div class="mc-val counter" id="mc-accuracy">—</div>
+          <div class="mc-label">RF Accuracy</div>
         </div>
-
-        <p class="result-model-tag" id="result-model-tag"></p>
-      </aside>
-
-    </main>
-
-    <!-- ── CLASS GUIDE ────────────────────────────── -->
-    <section class="guide glass">
-      <h3 class="guide-title">Account Classification Guide</h3>
-      <div class="guide-grid">
-        <div class="guide-item real">
-          <span class="gi-icon">✅</span>
-          <strong>Real</strong>
-          <p>Genuine user with organic activity and healthy follower ratio.</p>
-          <code class="sample-hint">~28 posts · 609 followers · 394 following</code>
+        <div class="metric-card glass">
+          <div class="mc-icon">⚖️</div>
+          <div class="mc-val counter" id="mc-balanced">—</div>
+          <div class="mc-label">RF Balanced Accuracy</div>
         </div>
-        <div class="guide-item active-fake">
-          <span class="gi-icon">⚠️</span>
-          <strong>Active Fake</strong>
-          <p>Bot or purchased account that mimics activity but shows suspicious signals.</p>
-          <code class="sample-hint">~61 posts · 2000 followers · 437 following</code>
+        <div class="metric-card glass">
+          <div class="mc-icon">🗂️</div>
+          <div class="mc-val counter" id="mc-samples">—</div>
+          <div class="mc-label">Training Samples</div>
         </div>
-        <div class="guide-item inactive-fake">
-          <span class="gi-icon">👻</span>
-          <strong>Inactive Fake</strong>
-          <p>Dormant or dead account with minimal posts and no bio.</p>
-          <code class="sample-hint">~1 post · 3900 followers · 88 following</code>
-        </div>
-        <div class="guide-item spammer">
-          <span class="gi-icon">🤖</span>
-          <strong>Spammer Fake</strong>
-          <p>High following, many posts, spam content patterns — classic bot behaviour.</p>
-          <code class="sample-hint">~51 posts · 1800 followers · 357 following</code>
+        <div class="metric-card glass">
+          <div class="mc-icon">🎯</div>
+          <div class="mc-val counter" id="mc-features">—</div>
+          <div class="mc-label">ML Features</div>
         </div>
       </div>
-    </section>
 
-    <footer class="site-footer">
-      <p>FakeGuard AI · Trained on <strong>43,307</strong> Instagram accounts · Random Forest + XGBoost</p>
-    </footer>
+      <div class="dash-grid">
 
-  </div>
+        <!-- Class Distribution Chart -->
+        <div class="glass card dash-card">
+          <h3 class="dash-card-title">Class Distribution</h3>
+          <p class="dash-card-sub">Breakdown of the 43,307 training samples</p>
+          <div class="donut-wrap">
+            <svg class="donut-chart" viewBox="0 0 200 200" id="donut-svg">
+              <circle class="donut-bg" cx="100" cy="100" r="70" />
+              <!-- Donut segments injected by JS -->
+            </svg>
+            <div class="donut-legend" id="donut-legend"></div>
+          </div>
+        </div>
+
+        <!-- Feature Importance Chart -->
+        <div class="glass card dash-card fi-card">
+          <h3 class="dash-card-title">Feature Importance</h3>
+          <p class="dash-card-sub">Top predictors from the Random Forest model</p>
+          <div class="fi-chart" id="fi-chart">
+            <div class="fi-loading">Loading…</div>
+          </div>
+        </div>
+
+      </div><!-- /dash-grid -->
+
+      <!-- Model Comparison Table -->
+      <div class="glass card mt-2" id="model-compare-card">
+        <h3 class="dash-card-title">Model Comparison</h3>
+        <p class="dash-card-sub">Random Forest vs XGBoost on the test set</p>
+        <div class="table-wrap">
+          <table class="compare-table" id="compare-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>🌲 Random Forest</th>
+                <th id="xgb-col-header">⚡ XGBoost</th>
+              </tr>
+            </thead>
+            <tbody id="compare-body">
+              <tr><td colspan="3" class="loading-row">Loading data…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /page-dashboard -->
+
+    <!-- ════════════════════════════════════════════════════════════
+         PAGE: HISTORY
+    ════════════════════════════════════════════════════════════ -->
+    <div class="page-view" id="page-history">
+      <div class="page-header history-header">
+        <div>
+          <h1 class="page-title gradient-text">Scan History</h1>
+          <p class="page-sub">Your recent account analyses (stored locally)</p>
+        </div>
+        <div class="history-actions">
+          <input type="text" id="history-search" class="history-search" placeholder="🔍 Filter results…" />
+          <button class="danger-btn" onclick="clearHistory()">🗑️ Clear All</button>
+        </div>
+      </div>
+
+      <div id="history-empty" class="empty-state glass">
+        <div class="empty-icon">📭</div>
+        <h3>No scans yet</h3>
+        <p>Run an analysis on the Analyzer page and save it to see your history here.</p>
+        <button class="scan-btn" style="width:auto;padding:.75rem 1.5rem" onclick="navigate('home')">
+          Go to Analyzer
+        </button>
+      </div>
+
+      <div id="history-table-wrap" class="hidden">
+        <div class="history-summary" id="history-summary"></div>
+        <table class="history-table glass-sm" id="history-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Time</th>
+              <th>Posts</th>
+              <th>Followers</th>
+              <th>Following</th>
+              <th>Model</th>
+              <th>Result</th>
+              <th>Confidence</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+    </div><!-- /page-history -->
+
+    <!-- ════════════════════════════════════════════════════════════
+         PAGE: ABOUT
+    ════════════════════════════════════════════════════════════ -->
+    <div class="page-view" id="page-about">
+      <div class="page-header">
+        <h1 class="page-title gradient-text">About FakeGuard AI</h1>
+        <p class="page-sub">Technical details, dataset info, and project architecture</p>
+      </div>
+
+      <div class="about-grid">
+
+        <div class="glass card about-card">
+          <div class="about-icon">🎯</div>
+          <h3>Project Goal</h3>
+          <p>A multi-class machine learning system to classify Instagram accounts into four categories — real users, active fakes, inactive fakes, and spammers — helping platforms and researchers identify inauthentic behaviour at scale.</p>
+        </div>
+
+        <div class="glass card about-card">
+          <div class="about-icon">🗂️</div>
+          <h3>Dataset</h3>
+          <p>Trained on <strong>43,307 Instagram accounts</strong> with features including post count, follower/following ratio, bio length, profile picture, external link, engagement metrics, and derived engineered features.</p>
+          <div class="tag-row">
+            <span class="tag tag-blue">43,307 samples</span>
+            <span class="tag tag-purple">Balanced classes</span>
+            <span class="tag tag-green">17+ features</span>
+          </div>
+        </div>
+
+        <div class="glass card about-card">
+          <div class="about-icon">🧠</div>
+          <h3>Machine Learning</h3>
+          <p>Ensemble approach combining Random Forest (500 trees, balanced subsample weighting) and XGBoost (500 estimators, logloss optimised) with extensive feature engineering including log transforms, ratio features, and binary flags.</p>
+          <div class="tag-row">
+            <span class="tag tag-orange">Random Forest</span>
+            <span class="tag tag-yellow">XGBoost</span>
+            <span class="tag tag-blue">Scikit-learn</span>
+          </div>
+        </div>
+
+        <div class="glass card about-card">
+          <div class="about-icon">⚡</div>
+          <h3>Tech Stack</h3>
+          <ul class="tech-list">
+            <li><span class="tech-dot tech-python"></span> Python 3.11+</li>
+            <li><span class="tech-dot tech-fastapi"></span> FastAPI + Uvicorn</li>
+            <li><span class="tech-dot tech-ml"></span> Scikit-learn + XGBoost</li>
+            <li><span class="tech-dot tech-data"></span> Pandas + NumPy</li>
+            <li><span class="tech-dot tech-ui"></span> Vanilla JS + CSS (SPA)</li>
+          </ul>
+        </div>
+
+        <div class="glass card about-card">
+          <div class="about-icon">🔬</div>
+          <h3>Feature Engineering</h3>
+          <ul class="feature-list">
+            <li>📐 Follower/Following ratio</li>
+            <li>📐 Followers per post</li>
+            <li>📐 Engagement rate (simulated)</li>
+            <li>📐 Log-transforms for skewed cols</li>
+            <li>📐 Binary flags: has_bio, has_pic</li>
+            <li>📐 Irregular post detection</li>
+          </ul>
+        </div>
+
+        <div class="glass card about-card">
+          <div class="about-icon">🏷️</div>
+          <h3>Class Labels</h3>
+          <div class="class-legend">
+            <div class="cl-item cl-r"><span>✅</span> <strong>r</strong> — Real Account</div>
+            <div class="cl-item cl-a"><span>⚠️</span> <strong>a</strong> — Active Fake</div>
+            <div class="cl-item cl-i"><span>👻</span> <strong>i</strong> — Inactive Fake</div>
+            <div class="cl-item cl-s"><span>🤖</span> <strong>s</strong> — Spammer Fake</div>
+          </div>
+        </div>
+
+      </div><!-- /about-grid -->
+    </div><!-- /page-about -->
+
+  </main>
+
+  <footer class="site-footer">
+    <p>FakeGuard AI &copy; 2025 · Trained on <strong>43,307</strong> Instagram accounts · RF + XGBoost · Built with FastAPI</p>
+  </footer>
 
   <script src="/static/js/main.js"></script>
 </body>
