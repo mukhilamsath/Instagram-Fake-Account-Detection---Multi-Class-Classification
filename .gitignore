@@ -40,10 +40,7 @@ meta_debug.json
 random_forest_model*.pkl
 ensemble_model_*.pkl
 
-# =========================
-# Dataset (optional - if large)
-# =========================
-dataset.csv
+
 
 # =========================
 # OS Files
